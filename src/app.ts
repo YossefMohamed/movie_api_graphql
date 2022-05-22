@@ -9,7 +9,7 @@ import { connectDB } from "./helper/connectDB";
 dotenv.config({ path: path.join(__dirname, "./.env") });
 
 const app = express();
-const port = 9000;
+const port = 3000;
 
 console.log(process.env.DB_URI);
 connectDB();

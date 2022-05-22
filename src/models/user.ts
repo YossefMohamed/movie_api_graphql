@@ -25,6 +25,15 @@ const usersSchema = new mongoose.Schema(
       type: String,
       default: "avatar.png",
     },
+    favoriteMovies : [{
+      movieID : {
+        type : String,
+      },
+      movieName : {
+        type : String,
+      }
+    }]
+    ,
     verified: {
       type: Boolean,
       default: false,

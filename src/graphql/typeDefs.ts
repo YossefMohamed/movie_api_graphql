@@ -9,7 +9,14 @@ export const typeDefs = gql`
     updatedAt: String!
     verified: Boolean
     createdAt: String!
+    favoriteMovies: [Movie]!
+    
   }
+  type Movie {
+    movieName: String
+    movieID: String
+  }
+
   extend type Query {
     getUsers: [User!]!
     login(email: String!, password: String!): AuthPayload!
@@ -24,6 +31,7 @@ export const typeDefs = gql`
     ): AuthPayload!
     updateUser(name: String, email: String, password: String): AuthPayload!
     deleteUser: AuthPayload!
+    addMovie(movieName : String! , movieID : String!): User!
   }
   type AuthPayload {
     token: String!
