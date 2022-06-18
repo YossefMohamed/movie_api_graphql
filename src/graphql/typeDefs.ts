@@ -10,7 +10,6 @@ export const typeDefs = gql`
     verified: Boolean
     createdAt: String!
     favoriteMovies: [Movie]!
-    
   }
   type Movie {
     movieName: String
@@ -31,7 +30,9 @@ export const typeDefs = gql`
     ): AuthPayload!
     updateUser(name: String, email: String, password: String): AuthPayload!
     deleteUser: AuthPayload!
-    addMovie(movieName : String! , movieID : String!): User!
+    addMovie(movieName: String!, movieID: String!): User!
+    removeMovie(movieID: String!): User
+    
   }
   type AuthPayload {
     token: String!

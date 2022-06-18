@@ -2,7 +2,19 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 
-const usersSchema = new mongoose.Schema(
+interface IUser extends mongoose.Document {
+  name: string;
+  email: string;
+  password: string;
+  favoriteMovies: { movieID: string; movieName: string }[];
+  verified: boolean;
+  code?: string;
+  createdAt: Date | number;
+  image?: string;
+  updatedAt: Date | number;
+  correctPassword(cadPassword: string, userPassword: string): Promise<boolean>;
+}
+const usersSchema = new mongoose.Schema<IUser>(
   {
     name: {
       type: String,
@@ -12,9 +24,9 @@ const usersSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Please Provide Your Email !"],
-      unique: true,
       trim: true,
       lowercase: true,
+      unique: true,
 
       validate: {
         validator: (el) => validator.isEmail(el),
@@ -25,15 +37,16 @@ const usersSchema = new mongoose.Schema(
       type: String,
       default: "avatar.png",
     },
-    favoriteMovies : [{
-      movieID : {
-        type : String,
+    favoriteMovies: [
+      {
+        movieID: {
+          type: String,
+        },
+        movieName: {
+          type: String,
+        },
       },
-      movieName : {
-        type : String,
-      }
-    }]
-    ,
+    ],
     verified: {
       type: Boolean,
       default: false,

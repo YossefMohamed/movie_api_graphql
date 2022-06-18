@@ -2,7 +2,7 @@ import { generateToken } from "../helper/generateToken";
 import { getUserId } from "../helper/getUserId";
 import User from "../models/user";
 
-export const resolvers: any = {
+export const resolvers = {
   Query: {
     getUsers: async () => {
       const users = await User.find();
@@ -22,7 +22,7 @@ export const resolvers: any = {
         if (!checkPassword || !user)
           throw new Error("Email or Password Are Incorrect");
         const token = generateToken(user.id);
-        console.log(user)
+        console.log(user);
         return { user, token };
       } catch (e) {
         throw new Error(e.message);
@@ -68,17 +68,32 @@ export const resolvers: any = {
       const deletedUser = await User.findByIdAndDelete(userId);
       return deletedUser;
     },
-    addMovie : async(_ , args : {movieName : String;movieID : String} , context) => {
+    addMovie: async (
+      _,
+      args: { movieName: string; movieID: string },
+      context
+    ) => {
       const userId = getUserId(context.req);
       if (!userId) throw new Error("Please Login!");
       const user = await User.findById(userId);
-      
+
       user.favoriteMovies = [
-        ...user.favoriteMovies , {movieID : args.movieID , movieName  : args.movieName}
-      ]
-      await user.save()
-      console.log(user)
-      return user
-    }
+        ...user.favoriteMovies,
+        { movieID: args.movieID, movieName: args.movieName },
+      ];
+      await user.save();
+      console.log(user);
+      return user;
+    },
+    removeMovie: async (_, args: { movieID: string }, context) => {
+      const userId = getUserId(context.req);
+      if (!userId) throw new Error("Please Login!");
+      const user = await User.findById(userId);
+      user.favoriteMovies = user.favoriteMovies.filter(
+        (movie) => movie.movieID !== args.movieID
+      );
+      await user.save();
+      return user;
+    },
   },
 };
