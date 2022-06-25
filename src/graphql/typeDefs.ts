@@ -13,7 +13,7 @@ export const typeDefs = gql`
   }
   type Movie {
     movieName: String
-    movieID: String
+    movieID: Int
   }
 
   extend type Query {
@@ -30,8 +30,8 @@ export const typeDefs = gql`
     ): AuthPayload!
     updateUser(name: String, email: String, password: String): AuthPayload!
     deleteUser: AuthPayload!
-    addMovie(movieName: String!, movieID: String!): User!
-    removeMovie(movieID: String!): User
+    addMovie(movieName: String!, movieID: Int!): User!
+    removeMovie(movieID: Int!): User
     
   }
   type AuthPayload {

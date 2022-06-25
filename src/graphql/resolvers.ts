@@ -76,13 +76,14 @@ export const resolvers = {
       const userId = getUserId(context.req);
       if (!userId) throw new Error("Please Login!");
       const user = await User.findById(userId);
-
+      
+      if(user.favoriteMovies.filter((movie) => movie.movieID == args.movieID).length)
+        throw new Error("Movie already exists");
       user.favoriteMovies = [
         ...user.favoriteMovies,
         { movieID: args.movieID, movieName: args.movieName },
       ];
       await user.save();
-      console.log(user);
       return user;
     },
     removeMovie: async (_, args: { movieID: string }, context) => {
