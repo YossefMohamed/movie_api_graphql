@@ -12,13 +12,15 @@ export const typeDefs = gql`
     favoriteMovies: [Movie]!
   }
   type Movie {
-    movieName: String
-    movieID: Int
+    movieName: String!
+    movieID: Int!
+    movieImage : String!
   }
 
   extend type Query {
     getUsers: [User!]!
     login(email: String!, password: String!): AuthPayload!
+    getFavoriteMovies:[Movie]!
   }
   extend type Mutation {
     updateUser(name: String, email: String, password: String): AuthPayload!
@@ -30,7 +32,7 @@ export const typeDefs = gql`
     ): AuthPayload!
     updateUser(name: String, email: String, password: String): AuthPayload!
     deleteUser: AuthPayload!
-    addMovie(movieName: String!, movieID: Int!): User!
+    addMovie(movieName: String!, movieID: Int! , movieImage : String!): User!
     removeMovie(movieID: Int!): User
     
   }
