@@ -7,6 +7,7 @@ interface IUser extends mongoose.Document {
   email: string;
   password: string;
   favoriteMovies: { movieID: string; movieName: string ; movieImage: string }[];
+  savedMovies: { movieID: string; movieName: string ; movieImage: string }[];
   verified: boolean;
   code?: string;
   createdAt: Date | number;
@@ -38,6 +39,19 @@ const usersSchema = new mongoose.Schema<IUser>(
       default: "avatar.png",
     },
     favoriteMovies: [
+      {
+        movieID: {
+          type: Number,
+        },
+        movieName: {
+          type: String,
+        },
+        movieImage : {
+          type: String,
+        },
+      },
+    ],
+    savedMovies: [
       {
         movieID: {
           type: Number,

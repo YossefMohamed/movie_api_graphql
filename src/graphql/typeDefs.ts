@@ -10,6 +10,7 @@ export const typeDefs = gql`
     verified: Boolean
     createdAt: String!
     favoriteMovies: [Movie]!
+    savedMovies: [Movie]!
   }
   type Movie {
     movieName: String!
@@ -21,6 +22,7 @@ export const typeDefs = gql`
     getUsers: [User!]!
     login(email: String!, password: String!): AuthPayload!
     getFavoriteMovies:[Movie]!
+    getSavedMovies:[Movie]!
   }
   extend type Mutation {
     updateUser(name: String, email: String, password: String): AuthPayload!
@@ -33,7 +35,9 @@ export const typeDefs = gql`
     updateUser(name: String, email: String, password: String): AuthPayload!
     deleteUser: AuthPayload!
     addMovie(movieName: String!, movieID: Int! , movieImage : String!): User!
+    addSavedMovie(movieName: String!, movieID: Int! , movieImage : String!): User!
     removeMovie(movieID: Int!): User
+    removeSavedMovie(movieID: Int!): User
     
   }
   type AuthPayload {
