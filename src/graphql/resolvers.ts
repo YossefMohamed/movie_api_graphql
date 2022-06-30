@@ -67,14 +67,24 @@ export const resolvers = {
     },
     updateUser: async (parent, args, context) => {
       const userId = getUserId(context.req);
-      console.log(userId);
       if (!userId) throw new Error("Please Login!");
       const user = await User.findById(userId);
       if (!user) throw new Error("User not found");
-
+      console.log(args)
       user.email = args.email || user.email;
       user.name = args.name || user.name;
-      args.password ? (user.password = args.password) : "";
+      if(args.oldPassword && args.password ){
+        const checkPassword =await user.correctPassword(
+        args.oldPassword,
+        user.password
+      );
+
+      if (!checkPassword)
+        throw new Error("Email or Password Are Incorrect"); 
+        
+        user.password = args.password;
+      
+      }
       await user.save();
       return {
         user,

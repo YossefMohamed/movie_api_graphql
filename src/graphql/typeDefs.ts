@@ -25,14 +25,13 @@ export const typeDefs = gql`
     getSavedMovies:[Movie]!
   }
   extend type Mutation {
-    updateUser(name: String, email: String, password: String): AuthPayload!
     register(
       name: String!
       email: String!
       password: String!
       confirmPassword: String!
     ): AuthPayload!
-    updateUser(name: String, email: String, password: String): AuthPayload!
+    updateUser(name: String!, email: String!,oldPassword: String!,password: String!): AuthPayload!
     deleteUser: AuthPayload!
     addMovie(movieName: String!, movieID: Int! , movieImage : String!): User!
     addSavedMovie(movieName: String!, movieID: Int! , movieImage : String!): User!
