@@ -1,5 +1,6 @@
 import { generateToken } from "../helper/generateToken";
 import { getUserId } from "../helper/getUserId";
+import Comment from "../models/comment";
 import User from "../models/user";
 
 export const resolvers = {
@@ -48,6 +49,13 @@ export const resolvers = {
         throw new Error(error.message);
 
       }
+    },
+    getMovieComments : async(_,args) => {
+      const comments = await Comment.find({
+        movie : args.movie
+      }).populate("user")
+      console.log(comments)
+      return comments
     }
   },
   Mutation: {
@@ -155,5 +163,18 @@ export const resolvers = {
       await user.save();
       return user;
     },
+    addComment : async (_,args,context) => {
+      const userId = getUserId(context.req);
+      if (!userId) throw new Error("Please Login!");
+      const user = await User.findById(userId);
+      const comment = await Comment.create({
+        user : userId,
+        movie : args.movie,
+        content : args.content
+      })
+      const commentDoc = await comment.populate("user")
+      return commentDoc
+    },
+    
   },
 };

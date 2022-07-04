@@ -23,6 +23,8 @@ export const typeDefs = gql`
     login(email: String!, password: String!): AuthPayload!
     getFavoriteMovies:[Movie]!
     getSavedMovies:[Movie]!
+    getMovieComments(movie:Int!):[Comment]!
+
   }
   extend type Mutation {
     register(
@@ -37,7 +39,14 @@ export const typeDefs = gql`
     addSavedMovie(movieName: String!, movieID: Int! , movieImage : String!): User!
     removeMovie(movieID: Int!): User
     removeSavedMovie(movieID: Int!): User
-    
+    addComment(movie: Int!,content:String!): Comment
+  }
+
+  type Comment  {
+    content: String!
+    user : User!
+    movie : Int!
+    createdAt: String!
   }
   type AuthPayload {
     token: String!
