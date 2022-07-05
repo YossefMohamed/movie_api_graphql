@@ -5,9 +5,9 @@ import User from "../models/user";
 
 export const resolvers = {
   Query: {
-    getUsers: async () => {
-      const users = await User.find();
-      return users;
+    getUser: async (_,args) => {
+      const user = await User.findById(args.id);
+      return user;
     },
     login: async (parant, args) => {
       try {

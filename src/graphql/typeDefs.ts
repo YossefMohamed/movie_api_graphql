@@ -15,11 +15,11 @@ export const typeDefs = gql`
   type Movie {
     movieName: String!
     movieID: Int!
-    movieImage : String!
+    movieImage : String
   }
 
   extend type Query {
-    getUsers: [User!]!
+    getUser(id:String!): User!
     login(email: String!, password: String!): AuthPayload!
     getFavoriteMovies:[Movie]!
     getSavedMovies:[Movie]!
