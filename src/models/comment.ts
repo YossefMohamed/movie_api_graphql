@@ -5,6 +5,7 @@ interface IComment extends mongoose.Document {
     user: mongoose.ObjectId;
     content:string;
     createdAt: Date | number;
+   
 }
 
 
@@ -24,7 +25,8 @@ user : {
 content:{
     type : String,
     required : true
-},
+}
+,
 createdAt: { type: Date, required: true, default: Date.now },
 
 

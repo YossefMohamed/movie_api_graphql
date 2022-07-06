@@ -11,6 +11,8 @@ export const typeDefs = gql`
     createdAt: String!
     favoriteMovies: [Movie]!
     savedMovies: [Movie]!
+    deleted : Boolean!
+    following : [User]!
   }
   type Movie {
     movieName: String!
@@ -40,6 +42,8 @@ export const typeDefs = gql`
     removeMovie(movieID: Int!): User
     removeSavedMovie(movieID: Int!): User
     addComment(movie: Int!,content:String!): Comment
+    followUser(followingId:String!):User!
+    unFollowUser(followingId:String!):User!
   }
 
   type Comment  {

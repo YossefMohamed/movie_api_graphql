@@ -13,6 +13,8 @@ interface IUser extends mongoose.Document {
   createdAt: Date | number;
   image?: string;
   updatedAt: Date | number;
+  following: {type : mongoose.ObjectId}[];
+  deleted : boolean;
   correctPassword(cadPassword: string, userPassword: string): Promise<boolean>;
 }
 const usersSchema = new mongoose.Schema<IUser>(
@@ -64,6 +66,17 @@ const usersSchema = new mongoose.Schema<IUser>(
         },
       },
     ],
+    following : [{
+        type : mongoose.Types.ObjectId,
+        required : true,
+        ref : "User"
+    }]
+    ,
+    
+    deleted : {
+        type : Boolean,
+        default : false
+    },
     verified: {
       type: Boolean,
       default: false,

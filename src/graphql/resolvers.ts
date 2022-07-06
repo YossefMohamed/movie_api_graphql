@@ -175,6 +175,31 @@ export const resolvers = {
       const commentDoc = await comment.populate("user")
       return commentDoc
     },
-    
+    followUser : async(_,args , context) => {
+      const userId = getUserId(context.req);
+      if (!userId) throw new Error("Please Login!");
+      const user = await User.findById(userId);
+      if(user.following.map(id => `${id}` === `${args.followingId}`).length){
+        return user
+      }else{
+        user.following.push(args.followingId)
+        user.save()
+        return user
+      }
+      
+    },
+    unFollowUser : async(_,args , context) => {
+      const userId = getUserId(context.req);
+      if (!userId) throw new Error("Please Login!");
+      const user = await User.findById(userId);
+      if(user.following.map(id => `${id}` === `${args.followingId}`).length){
+        user.following.unshift(args.followingId)
+        user.save()
+        return user
+      }else{
+        return user
+      }
+      
+    }
   },
 };
