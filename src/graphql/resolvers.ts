@@ -59,18 +59,45 @@ export const resolvers = {
       console.log(comments);
       return comments;
     },
-    getAllPosts: async () => {
-      const posts = await Post.find()
-        .populate("user")
-        .populate("comments")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "user",
-            model: "User",
-          },
-        });
+    getAllPosts: async (_, args) => {
+      let posts;
+      if (args.tag.toLowerCase() === "all") {
+        posts = await Post.find()
+          .populate("user")
+          .populate("comments")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "user",
+              model: "User",
+            },
+          });
+      } else {
+        posts = await Post.find({
+          tag: args.tag.toLowerCase(),
+        })
+          .populate("user")
+          .populate("comments")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "user",
+              model: "User",
+            },
+          });
+      }
       return posts;
+    },
+    getFollowing: async (_, args, context) => {
+      try {
+        const userId = getUserId(context.req);
+        if (!userId) throw new Error("Please Login!");
+        const user = await User.findById(userId).populate("following");
+        console.log(user);
+        return user.following;
+      } catch (error) {
+        throw new Error(error.message);
+      }
     },
   },
   Mutation: {

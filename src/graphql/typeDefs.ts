@@ -35,7 +35,7 @@ export const typeDefs = gql`
   type Movie {
     movieName: String!
     movieID: Int!
-    movieImage: String!
+    movieImage: String
   }
 
   extend type Query {
@@ -44,7 +44,8 @@ export const typeDefs = gql`
     getFavoriteMovies: [Movie]!
     getSavedMovies: [Movie]!
     getMovieComments(movie: Int!): [Comment]!
-    getAllPosts: [Post]
+    getAllPosts(tag: String!): [Post]
+    getFollowing: [User]
   }
   extend type Mutation {
     register(
