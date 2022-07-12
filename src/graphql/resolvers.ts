@@ -56,45 +56,111 @@ export const resolvers = {
       const comments = await Comment.find({
         movie: args.movie,
       }).populate("user");
-      console.log(comments);
       return comments;
     },
-    getAllPosts: async (_, args) => {
+    getAllPosts: async (_, args, context) => {
       let posts;
+      const argSort = args.sort?.toLowerCase();
+      const sort = `${
+        argSort === "newest"
+          ? "-createdAt"
+          : argSort === "oldest"
+          ? "createdAt"
+          : argSort === "top"
+          ? "-likes"
+          : "createdAt"
+      }`;
       if (args.tag.toLowerCase() === "all") {
-        posts = await Post.find()
-          .populate("user")
-          .populate("comments")
-          .populate({
-            path: "comments",
-            populate: {
-              path: "user",
-              model: "User",
-            },
-          });
+        if (args.following) {
+          const userId = getUserId(context.req);
+          if (!userId) throw new Error("Please Login!");
+          const user = await User.findById(userId);
+          posts = await Post.find({
+            $or: [{ user: { $in: user.following } }, { user: { $eq: userId } }],
+          })
+            .populate("user")
+            .populate("comments")
+            .populate({
+              path: "comments",
+              populate: {
+                path: "user",
+                model: "User",
+              },
+            })
+            .sort(`${sort}`);
+        } else {
+          posts = await Post.find()
+            .populate("user")
+            .populate("comments")
+            .populate({
+              path: "comments",
+              populate: {
+                path: "user",
+                model: "User",
+              },
+            })
+            .sort(`${sort}`);
+        }
       } else {
-        posts = await Post.find({
-          tag: args.tag.toLowerCase(),
-        })
-          .populate("user")
-          .populate("comments")
-          .populate({
-            path: "comments",
-            populate: {
-              path: "user",
-              model: "User",
-            },
-          });
+        if (args.following) {
+          const userId = getUserId(context.req);
+          if (!userId) throw new Error("Please Login!");
+          const user = await User.findById(userId);
+          posts = await Post.find({
+            $and: [
+              { tag: args.tag },
+              {
+                $or: [
+                  { user: { $in: user.following } },
+                  { user: { $eq: userId } },
+                ],
+              },
+            ],
+          })
+            .populate("user")
+            .populate("comments")
+            .populate({
+              path: "comments",
+              populate: {
+                path: "user",
+                model: "User",
+              },
+            })
+            .sort(`${sort}`);
+        } else {
+          posts = await Post.find({
+            tag: args.tag.toLowerCase(),
+          })
+            .populate("user")
+            .populate("comments")
+            .populate({
+              path: "comments",
+              populate: {
+                path: "user",
+                model: "User",
+              },
+            })
+            .sort(`${sort}`);
+        }
       }
+
       return posts;
     },
     getFollowing: async (_, args, context) => {
       try {
         const userId = getUserId(context.req);
         if (!userId) throw new Error("Please Login!");
-        const user = await User.findById(userId).populate("following");
-        console.log(user);
-        return user.following;
+        const type = args.type;
+
+        if (type === "following") {
+          const user = await User.findById(userId).populate("following");
+          return user.following;
+        }
+        if (type === "followers") {
+          const users = await User.find({ following: { $in: [userId] } });
+          return users;
+        }
+        return [];
       } catch (error) {
         throw new Error(error.message);
       }
@@ -120,7 +186,6 @@ export const resolvers = {
       if (!userId) throw new Error("Please Login!");
       const user = await User.findById(userId);
       if (!user) throw new Error("User not found");
-      console.log(args);
       user.email = args.email || user.email;
       user.name = args.name || user.name;
       if (args.oldPassword && args.password) {
@@ -225,6 +290,7 @@ export const resolvers = {
         movie: args.movie,
         content: args.content,
       });
+
       const commentDoc = await comment.populate("user");
       return commentDoc;
     },
@@ -232,9 +298,7 @@ export const resolvers = {
       const userId = getUserId(context.req);
       if (!userId) throw new Error("Please Login!");
       const user = await User.findById(userId);
-      if (
-        user.following.map((id) => `${id}` === `${args.followingId}`).length
-      ) {
+      if (user.following.find((id) => `${id}` === `${args.followingId}`)) {
         return user;
       } else {
         user.following.push(args.followingId);
@@ -253,7 +317,6 @@ export const resolvers = {
           (user) => `${user}` !== `${args.followingId}`
         );
         user.save();
-        console.log(user);
         return user;
       } else {
         return user;
@@ -317,11 +380,10 @@ export const resolvers = {
         post: args.postId,
         content: args.content,
       });
-      const post = await (
-        await Post.findById(args.postId).populate("user")
-      ).populated("comments");
-      console.log(post);
-      const postDoc = await post.populate("comments").populate({
+
+      const post = await Post.findById(args.postId).populate("user");
+
+      const postDoc = await post.populate({
         path: "comments",
         populate: {
           path: "user",

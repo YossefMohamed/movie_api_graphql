@@ -44,8 +44,8 @@ export const typeDefs = gql`
     getFavoriteMovies: [Movie]!
     getSavedMovies: [Movie]!
     getMovieComments(movie: Int!): [Comment]!
-    getAllPosts(tag: String!): [Post]
-    getFollowing: [User]
+    getAllPosts(tag: String!, following: Boolean, sort: String): [Post]
+    getFollowing(type: String): [User]
   }
   extend type Mutation {
     register(
