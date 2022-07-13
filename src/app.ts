@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import express from "express";
 import { ApolloServer, gql } from "apollo-server-express";
 import path from "path";
@@ -23,7 +25,7 @@ const rootTypeDef = gql`
 `;
 
 const server = new ApolloServer({
-  typeDefs: [rootTypeDef, typeDefs],
+  typeDefs: [rootTypeDef, ...typeDefs],
   resolvers,
   context: (req) => ({ ...req }),
 });
