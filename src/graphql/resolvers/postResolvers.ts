@@ -12,6 +12,7 @@ export const postResolvers = {
     getAllPosts: async (_, args, context) => {
       let posts;
       const argSort = args.sort?.toLowerCase();
+      console.log(argSort);
       const sort = `${
         argSort === "newest"
           ? "-createdAt"
@@ -21,6 +22,8 @@ export const postResolvers = {
           ? "-likes"
           : "createdAt"
       }`;
+      console.log(posts, sort);
+
       if (args.tag.toLowerCase() === "all") {
         if (args.following) {
           const userId = getUserId(context.req);
@@ -94,7 +97,7 @@ export const postResolvers = {
             .sort(`${sort}`);
         }
       }
-
+      console.log(posts);
       return posts;
     },
   },

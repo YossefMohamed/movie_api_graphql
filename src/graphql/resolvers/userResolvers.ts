@@ -22,6 +22,7 @@ export const userResolvers = {
         if (!checkPassword || !user)
           throw new Error("Email or Password Are Incorrect");
         const token = generateToken(user.id);
+        user.deleted = false;
         return { user, token };
       } catch (e) {
         throw new Error(e.message);
