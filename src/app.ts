@@ -24,6 +24,10 @@ const rootTypeDef = gql`
   }
 `;
 
+app.get("/" , (req,res) =>{
+  res.send("App Is Working");
+})
+
 const server = new ApolloServer({
   typeDefs: [rootTypeDef, ...typeDefs],
   resolvers,
