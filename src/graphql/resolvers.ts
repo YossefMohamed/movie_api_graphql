@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { generateToken } from "../helper/generateToken";
 import { getUserId } from "../helper/getUserId";
 import Comment from "../models/comment";
